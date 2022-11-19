@@ -158,17 +158,18 @@ CREATE ROLE estudiante;
 CREATE ROLE bibliotecario;
 CREATE USER "estudianteConsulta" WITH LOGIN PASSWORD 'M1cr0s0ft';
 CREATE USER "profesorConsulta" WITH LOGIN PASSWORD 'M1cr0s0ft';
+CREATE USER "bibliotecarioConsulta" WITH LOGIN PASSWORD 'M1cr0s0ft';
 GRANT estudiante TO "estudianteConsulta";
 GRANT profesor TO "profesorConsulta";
 
 ---------------------------LIBRIAN VIEW-------------------------------------
 CREATE VIEW EstudiantesUniversidad AS
 SELECT estudiantecomuni.id_est, estudiantecomuni.nam_est, estudiantecomuni.estado 
-FROM dblink('dbname = facultad_cienciasdelacomunicacion port = 5432',
+FROM dblink('dbname = facultad_cienciasdelacomunicacion port = 5432 user = "bibliotecarioConsulta" password = 'M1cr0s0ft'',
 'SELECT id_est, nam_est, estado FROM estudiante')AS estudiantecomuni(id_est INTEGER,nam_est VARCHAR,estado BOOLEAN)
 UNION
 SELECT estudianteinge.id_est, estudianteinge.nam_est, estudianteinge.estado 
-FROM dblink('dbname = facultad_ingenieriaycienciasbasicas port = 5432  = ',
+FROM dblink('dbname = facultad_ingenieriaycienciasbasicas port = 5432 user = "bibliotecarioConsulta" password = 'M1cr0s0ft' ',
 'SELECT id_est, nam_est, estado FROM estudiante')AS estudianteinge(id_est INTEGER,nam_est VARCHAR,estado BOOLEAN);
 
 ----------------------------STUDENTS VIEW----------------------------------
