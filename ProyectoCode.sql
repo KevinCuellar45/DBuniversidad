@@ -156,6 +156,10 @@ CREATE ROLE coordinador;
 CREATE ROLE profesor;
 CREATE ROLE estudiante;
 CREATE ROLE bibliotecario;
+CREATE USER "estudianteConsulta" WITH LOGIN PASSWORD 'M1cr0s0ft';
+CREATE USER "profesorConsulta" WITH LOGIN PASSWORD 'M1cr0s0ft';
+GRANT estudiante TO "estudianteConsulta";
+GRANT profesor TO "profesorConsulta";
 
 ---------------------------LIBRIAN VIEW-------------------------------------
 CREATE VIEW EstudiantesUniversidad AS
@@ -164,7 +168,7 @@ FROM dblink('dbname = facultad_cienciasdelacomunicacion port = 5432',
 'SELECT id_est, nam_est, estado FROM estudiante')AS estudiantecomuni(id_est INTEGER,nam_est VARCHAR,estado BOOLEAN)
 UNION
 SELECT estudianteinge.id_est, estudianteinge.nam_est, estudianteinge.estado 
-FROM dblink('dbname = facultad_ingenieriaycienciasbasicas port = 5432',
+FROM dblink('dbname = facultad_ingenieriaycienciasbasicas port = 5432  = ',
 'SELECT id_est, nam_est, estado FROM estudiante')AS estudianteinge(id_est INTEGER,nam_est VARCHAR,estado BOOLEAN);
 
 ----------------------------STUDENTS VIEW----------------------------------
@@ -178,7 +182,7 @@ WHERE est.id_est :: TEXT = CURRENT_USER;
 !REVISAR VISTA YA QUE PIDE USUARIO Y PASSWORD Y DEBERIA SER LIBRE
 */
 CREATE VIEW librosBiblioteca AS
-SELECT titulo, autor FROM dblink('dbname = biblioteca port = 5432','SELECT titulo, autor FROM libros') 
+SELECT titulo, autor FROM dblink('dbname = biblioteca port = 5432 user = "estudianteConsulta" password = 'M1cr0s0ft'','SELECT titulo, autor FROM libros') 
 					AS libros(titulo VARCHAR, autor TEXT);
 
 CREATE VIEW prestamosEstudiantes AS
@@ -186,7 +190,7 @@ SELECT est.nam_est,lib.titulo,lib.autor,prestamo.fechaprestamo, prestamo.fechade
 					'SELECT fechaprestamo, fechadevolucion, id_est, id_libro FROM prestamo')AS prestamo(
 					fechaprestamo DATE, fechadevolucion DATE, id_est INTEGER, id_libro INTEGER)
 INNER JOIN estudiante AS est ON prestamo.id_est = est.id_est
-INNER JOIN (SELECT id_libros ,titulo,autor FROM dblink('dbname = biblioteca port = 5432',
+INNER JOIN (SELECT id_libros ,titulo,autor FROM dblink('dbname = biblioteca port = 5432 user = "estudianteConsulta" password = 'M1cr0s0ft'',
 										'SELECT id_libros, titulo, autor FROM libros')AS libros(id_libros INTEGER, titulo VARCHAR, autor VARCHAR)) AS lib ON prestamo.id_libro = lib.id_libros
 WHERE est.id_est :: TEXT = CURRENT_USER;
 ---------------------------- COORDINATOR VIEWS--------------------------------
@@ -207,7 +211,7 @@ WHERE pro.id_profesor :: TEXT = CURRENT_USER;
 !REVISAR VISTA YA QUE PIDE USUARIO Y PASSWORD Y DEBERIA SER LIBRE
 */
 CREATE VIEW librosBiblioteca AS
-SELECT titulo, autor FROM dblink('dbname = biblioteca port = 5432','SELECT titulo, autor FROM libros') 
+SELECT titulo, autor FROM dblink('dbname = biblioteca port = 5432 user = "profesorConsulta" password = 'M1cr0s0ft'','SELECT titulo, autor FROM libros') 
 					AS libros(titulo VARCHAR, autor TEXT);
 
 ----------------------------LIBRARIAN PERMISS----------------------------------
