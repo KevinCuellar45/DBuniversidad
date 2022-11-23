@@ -51,7 +51,6 @@ CREATE TABLE profesor (
 	nam_prof VARCHAR(255) NOT NULL,
 	id_facul integer NOT NULL,
     id_grupo integer NOT NULL  ,
-    id_asig integer NOT NULL  ,
 	CONSTRAINT profesor_pk PRIMARY KEY (id_profesor)
 );
 CREATE TABLE asignaturas (
