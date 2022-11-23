@@ -6,6 +6,7 @@ WE CREATE THE DATABASE AND EXTENTIONS
 -------------------------------------
 */
 CREATE EXTENSION DBLINK;
+CREATE EXTENSION pgcrypto;
 CREATE DATABASE biblioteca;
 CREATE DATABASE facultad_ingenieriaYCienciasBasicas;
 CREATE DATABASE facultad_CienciasDeLaComunicacion;
@@ -378,3 +379,5 @@ END;
 $trigger$ language plpgsql;
 
 CREATE TRIGGER stock_lib AFTER INSERT ON "Prestamo" FOR EACH ROW EXECUTE PROCEDURE stock_lib();
+
+
