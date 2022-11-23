@@ -51,6 +51,7 @@ CREATE TABLE profesor (
 	nam_prof VARCHAR(255) NOT NULL,
 	id_facul integer NOT NULL,
    	id_grupo integer NOT NULL  ,
+	id_asig integer NOT NULL,
 	CONSTRAINT profesor_pk PRIMARY KEY (id_profesor)
 );
 CREATE TABLE asignaturas (
@@ -111,7 +112,7 @@ ALTER TABLE matricula ADD CONSTRAINT matricula_fk1 FOREIGN KEY (id_facul ,id_car
 ALTER TABLE salon ADD CONSTRAINT salon_fk0 FOREIGN KEY (id_sede) REFERENCES sede(id_sede);
 ALTER TABLE salon ADD CONSTRAINT salon_fk1 FOREIGN KEY (id_grupo,id_asig) REFERENCES grupo(id_grupo,id_asig);
 
-ALTER TABLE asignatura ADD CONSTRAINT asig_fk1 FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor);
+ALTER TABLE asignaturas ADD CONSTRAINT asig_fk1 FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor);
 /*
 --------------------------------------
 --------------------------------------
