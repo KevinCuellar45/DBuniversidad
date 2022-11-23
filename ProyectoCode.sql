@@ -255,6 +255,13 @@ GRANT SELECT ON estudiantesNotas TO estudiante;
 GRANT SELECT ON librosBiblioteca TO estudiante;
 GRANT SELECT ON prestamosEstudiantes TO estudiante;
 
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION create_userest() RETURNS
 TRIGGER AS $create_userest$
@@ -308,7 +315,7 @@ DECLARE
  cord_name VARCHAR(30) := (SELECT coordinador FROM carrera WHERE id_carr = NEW.id_carr);
 BEGIN
 EXECUTE 'CREATE USER ' || cord_name || ' WITH PASSWORD ''' || cord_name || '''';
-EXECUTE 'GRANT profesor TO ' || cord_name;
+EXECUTE 'GRANT coordinador TO ' || cord_name;
 RETURN NEW;
 END;
 $create_usercord$ LANGUAGE plpgsql;
@@ -332,18 +339,6 @@ fecha date NOT NULL
 
 CREATE OR REPLACE FUNCTION log_auditoria() RETURNS TRIGGER AS $$
 BEGIN 
-
-
-
-
-
-
-
-
-
-
-----------------------------------------------------------------------------------------------------------------------------
-
 IF(TG_OP = 'DELETE') THEN
 INSERT INTO Registros (tipo,valor_anterior,valor_nuevo,usuario,fecha)
 VALUES('DELETE',OLD,NULL,current_user,now());
@@ -379,5 +374,51 @@ END;
 $trigger$ language plpgsql;
 
 CREATE TRIGGER stock_lib AFTER INSERT ON "Prestamo" FOR EACH ROW EXECUTE PROCEDURE stock_lib();
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+INSERT INTO public.sede(
+	id_sede, dir_sede, nam_sede)
+	VALUES (1, 'Calle siempre viva', 'Cordoba');
+	
+INSERT INTO public.sede(
+	id_sede, dir_sede, nam_sede)
+	VALUES (2, 'Diagonal la esperanza', 'Bolivar');
+
+INSERT INTO public.sede(
+	id_sede, dir_sede, nam_sede)
+	VALUES (3, 'Calle tortugitas', 'Santander');
+------------------------------------------------------------------------------------------------------------------------------------------------------
+INSERT INTO public.facultad(
+	id_facul, decano, nam_facul)
+	VALUES (1, 'Mister Feliz', 'Facultad de ciencias basicas');
+
+INSERT INTO public.facultad(
+	id_facul, decano, nam_facul)
+	VALUES (2, 'Mister Simpatico', 'Facultad de lenguas');
+	
+	
+INSERT INTO public.facultad(
+	id_facul, decano, nam_facul)
+	VALUES (3, 'Mister Alegre', 'Facultad de Ingenieria');
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+INSERT INTO public.carrera(
+	id_carr, nam_carr, coordinador, id_facul)
+	VALUES (101, 'Matematicas', 'JulipoProfe', 1);
+	
+INSERT INTO public.carrera(
+	id_carr, nam_carr, coordinador, id_facul)
+	VALUES (201, 'Ingles', 'Zack', 2);
+	
+INSERT INTO public.carrera(
+	id_carr, nam_carr, coordinador, id_facul)
+	VALUES (301, 'Ingenieria Electronica', 'Tesla', 3);
+	
+INSERT INTO public.carrera(
+	id_carr, nam_carr, coordinador, id_facul)
+	VALUES (302, 'Ingenieria de Sistemas', 'Jobs', 3);
+	
+INSERT INTO public.carrera(
+	id_carr, nam_carr, coordinador, id_facul)
+	VALUES (302, 'Ingenieria mecanica', 'Shellby', 3);
 
 
