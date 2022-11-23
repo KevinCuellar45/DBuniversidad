@@ -1,5 +1,5 @@
 /*
--------------------------------------
+-----------------------------------
 -------------------------------------
 WE CREATE THE DATABASE AND EXTENTIONS
 -------------------------------------
@@ -140,6 +140,7 @@ CREATE TABLE ejemplares (
 	id_ejemplar integer NOT NULL  ,
 	version1 VARCHAR(255) NOT NULL,
 	id_libros integer NOT NULL  ,
+	cant integer  ,
 	CONSTRAINT ejemplares_pk PRIMARY KEY (id_libros,id_ejemplar)
 );
 
@@ -252,3 +253,128 @@ GRANT USAGE ON SCHEMA public TO estudiante;
 GRANT SELECT ON estudiantesNotas TO estudiante;
 GRANT SELECT ON librosBiblioteca TO estudiante;
 GRANT SELECT ON prestamosEstudiantes TO estudiante;
+
+
+CREATE OR REPLACE FUNCTION create_userest() RETURNS
+TRIGGER AS $create_userest$
+DECLARE
+ est_name VARCHAR(50) := (SELECT nam_est FROM estudiante WHERE id_est = NEW.id_est);
+BEGIN
+EXECUTE 'CREATE USER ' || est_name || ' WITH PASSWORD ''' || est_name || '''';
+EXECUTE 'GRANT estudiante TO ' || est_name;
+RETURN NEW;
+END;
+$create_userest$ LANGUAGE plpgsql;
+
+CREATE trigger create_userest AFTER INSERT ON estudiante
+FOR EACH ROW EXECUTE PROCEDURE create_userest();
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO public.estudiante(
+	id_est, nam_est, fechanac, cel, estado)
+	VALUES (123, 'DAVID', '2000/02/12', 3043185, TRUE);
+
+INSERT INTO public.estudiante(
+	id_est, nam_est, fechanac, cel, estado)
+	VALUES (213, 'JULIAN', '1998/07/05', 3031328, TRUE);
+
+INSERT INTO public.estudiante(
+	id_est, nam_est, fechanac, cel, estado)
+	VALUES (321, 'KEVIN', '2001/05/18', 3043192, TRUE);
+
+INSERT INTO public.estudiante(
+	id_est, nam_est, fechanac, cel, estado)
+	VALUES (456, 'SEBASTIAN', '1996/07/05', 3032328, TRUE);
+	
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION create_userprof() RETURNS
+TRIGGER AS $create_userprof$
+DECLARE
+ prof_name VARCHAR(30) := (SELECT nam_prof FROM Profesor WHERE id_profesor = NEW.id_profesor);
+BEGIN
+EXECUTE 'CREATE USER ' || prof_name || ' WITH PASSWORD ''' || prof_name || '''';
+EXECUTE 'GRANT profesor TO ' || prof_nameuser_name;
+RETURN NEW;
+END;
+$create_userprof$ LANGUAGE plpgsql;
+
+CREATE trigger create_userprof AFTER INSERT ON profesor
+FOR EACH ROW EXECUTE PROCEDURE create_userprof();
+
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION create_usercord() RETURNS
+TRIGGER AS $create_usercord$
+DECLARE
+ cord_name VARCHAR(30) := (SELECT coordinador FROM carrera WHERE id_carr = NEW.id_carr);
+BEGIN
+EXECUTE 'CREATE USER ' || cord_name || ' WITH PASSWORD ''' || cord_name || '''';
+EXECUTE 'GRANT profesor TO ' || cord_name;
+RETURN NEW;
+END;
+$create_usercord$ LANGUAGE plpgsql;
+
+CREATE trigger create_usercord AFTER INSERT ON carrera	
+FOR EACH ROW EXECUTE PROCEDURE create_usercord();
+
+------------------------------------------------------------------------------------------------------------------------
+
+create table Registros(
+
+reg_id SERIAL PRIMARY KEY,
+tipo varchar (500) NOT NULL,
+valor_anterior text,
+valor_nuevo text,
+usuario TEXT,
+fecha date NOT NULL
+);
+
+
+
+CREATE OR REPLACE FUNCTION log_auditoria() RETURNS TRIGGER AS $$
+BEGIN 
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+IF(TG_OP = 'DELETE') THEN
+INSERT INTO Registros (tipo,valor_anterior,valor_nuevo,usuario,fecha)
+VALUES('DELETE',OLD,NULL,current_user,now());
+RETURN OLD;
+
+ELSEIF(TG_GP = 'UPDATE') THEN
+INSERT INTO Registros (tipo,valor_anterior,valor_nuevo,usuario,fecha)
+VALUES ('UPDATE',OLD,NEW,current_user,now());
+RETURN NEW;
+
+ELSEIF(TG_OP = 'INSERT') THEN
+INSERT INTO Registros (tipo,valor_anterior,valor_nuevo,usuario,fecha)
+VALUES('INSERT',NULL,NEW,current_user,now());
+RETURN NEW;
+END IF;
+
+RETURN NULL;
+END;
+$$LANGUAGE plpgsql;
+
+
+
+CREATE TRIGGER log_registros AFTER INSERT OR UPDATE OR DELETE ON Inscribe FOR EACH ROW EXECUTE PROCEDURE log_auditoria();
+CREATE TRIGGER log_registros AFTER INSERT OR UPDATE OR DELETE ON Estudiante FOR EACH ROW EXECUTE PROCEDURE log_auditoria();
+------------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION stock_lib() RETURNS TRIGGER AS $trigger$
+    BEGIN
+      UPDATE "Ejemplares"
+        SET cant = COALESCE(cant, 0) - NEW.cantidad
+        WHERE "Ejemplares".id_ejemplar = NEW.id_ejemplar;
+    return NEW;
+END;
+$trigger$ language plpgsql;
+
+CREATE TRIGGER stock_lib AFTER INSERT ON "Prestamo" FOR EACH ROW EXECUTE PROCEDURE stock_lib();
