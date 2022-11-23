@@ -80,7 +80,7 @@ CREATE TABLE inscribe (
 CREATE TABLE matricula (
 	id_est integer NOT NULL  ,
 	id_carr integer NOT NULL  ,
-    id_facul INTEGER NOT NULL  ,
+    	id_facul INTEGER NOT NULL  ,
     
 	CONSTRAINT matricula_pk PRIMARY KEY (id_est,id_carr)
 );
