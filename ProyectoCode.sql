@@ -46,11 +46,11 @@ CREATE TABLE estudiante (
 	CONSTRAINT estudiante_pk PRIMARY KEY (id_est)
 );
 CREATE TABLE profesor (
-	id_profesor serial NOT NULL  ,
+	id_profesor integer NOT NULL  ,
 	profesion VARCHAR(255) NOT NULL,
 	nam_prof VARCHAR(255) NOT NULL,
 	id_facul integer NOT NULL,
-    id_grupo integer NOT NULL  ,
+   	id_grupo integer NOT NULL  ,
 	CONSTRAINT profesor_pk PRIMARY KEY (id_profesor)
 );
 CREATE TABLE asignaturas (
@@ -58,19 +58,20 @@ CREATE TABLE asignaturas (
 	int_hor integer NOT NULL  ,
 	creditos integer NOT NULL,
 	nam_asig VARCHAR(255) NOT NULL  ,
+	id_profesor integer NOT NULL  ,
 	CONSTRAINT asignaturas_pk PRIMARY KEY (id_asig)
 );
 CREATE TABLE grupo (
 	id_grupo integer NOT NULL  ,
 	id_profesor integer NOT NULL,	
 	id_asig integer NOT NULL  ,
-    horario VARCHAR(255) NOT NULL,
+   	horario VARCHAR(255) NOT NULL,
 	CONSTRAINT imparte_pk PRIMARY KEY (id_grupo,id_asig)
 );
 CREATE TABLE inscribe (
 	id_est integer NOT NULL  ,
 	id_grupo integer NOT NULL  ,
-    id_asig integer NOT NULL  ,
+    	id_asig integer NOT NULL  ,
 	n1 FLOAT,
 	n2 FLOAT,
 	n3 FLOAT,
@@ -88,8 +89,8 @@ CREATE TABLE salon (
 	tipo_salon VARCHAR(255) NOT NULL  ,
 	capacidad integer NOT NULL,
 	id_sede integer NOT NULL  ,
-    id_grupo integer NOT NULL,
-    id_asig integer NOT NULL  ,
+    	id_grupo integer NOT NULL,
+    	id_asig integer NOT NULL  ,
 	CONSTRAINT salon_pk PRIMARY KEY (id_sede,id_salon)
 );
 
@@ -109,6 +110,8 @@ ALTER TABLE matricula ADD CONSTRAINT matricula_fk1 FOREIGN KEY (id_facul ,id_car
 
 ALTER TABLE salon ADD CONSTRAINT salon_fk0 FOREIGN KEY (id_sede) REFERENCES sede(id_sede);
 ALTER TABLE salon ADD CONSTRAINT salon_fk1 FOREIGN KEY (id_grupo,id_asig) REFERENCES grupo(id_grupo,id_asig);
+
+ALTER TABLE asignatura ADD CONSTRAINT asig_fk1 FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor);
 /*
 --------------------------------------
 --------------------------------------
