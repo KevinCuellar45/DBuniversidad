@@ -420,6 +420,8 @@ INSERT INTO public.estudiante(
 INSERT INTO public.estudiante(
 	id_est, nam_est, fechanac, cel, estado)
 	VALUES (456, 'SEBASTIAN', '1996/07/05', 3032328, TRUE);
-	
+-------------------------------------------------------------------------------------------------------------------------
+INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (123,'ProfesorElectronica','Daniel lara',1,987);
+
 
 
