@@ -50,8 +50,6 @@ CREATE TABLE profesor (
 	profesion VARCHAR(255) NOT NULL,
 	nam_prof VARCHAR(255) NOT NULL,
 	id_facul integer NOT NULL,
-   	id_grupo integer NOT NULL  ,
-	id_asig integer NOT NULL,
 	CONSTRAINT profesor_pk PRIMARY KEY (id_profesor)
 );
 CREATE TABLE asignaturas (
@@ -59,7 +57,6 @@ CREATE TABLE asignaturas (
 	int_hor integer NOT NULL  ,
 	creditos integer NOT NULL,
 	nam_asig VARCHAR(255) NOT NULL  ,
-	id_profesor integer NOT NULL  ,
 	CONSTRAINT asignaturas_pk PRIMARY KEY (id_asig)
 );
 CREATE TABLE grupo (
@@ -98,7 +95,7 @@ CREATE TABLE salon (
 ALTER TABLE carrera ADD CONSTRAINT carrera_fk0 FOREIGN KEY (id_facul) REFERENCES facultad(id_facul);
 
 ALTER TABLE profesor ADD CONSTRAINT profesor_fk0 FOREIGN KEY (id_facul) REFERENCES facultad(id_facul);
-ALTER TABLE profesor ADD CONSTRAINT profesor_fk1 FOREIGN KEY (id_grupo,id_asig) REFERENCES grupo(id_grupo,id_asig);
+
 
 ALTER TABLE grupo ADD CONSTRAINT imparte_fk0 FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor);
 ALTER TABLE grupo ADD CONSTRAINT imparte_fk1 FOREIGN KEY (id_asig) REFERENCES asignaturas(id_asig);
@@ -112,7 +109,7 @@ ALTER TABLE matricula ADD CONSTRAINT matricula_fk1 FOREIGN KEY (id_facul ,id_car
 ALTER TABLE salon ADD CONSTRAINT salon_fk0 FOREIGN KEY (id_sede) REFERENCES sede(id_sede);
 ALTER TABLE salon ADD CONSTRAINT salon_fk1 FOREIGN KEY (id_grupo,id_asig) REFERENCES grupo(id_grupo,id_asig);
 
-ALTER TABLE asignaturas ADD CONSTRAINT asig_fk1 FOREIGN KEY (id_profesor) REFERENCES profesor(id_profesor);
+
 /*
 --------------------------------------
 --------------------------------------
@@ -353,14 +350,14 @@ CREATE TRIGGER log_registros AFTER INSERT OR UPDATE OR DELETE ON Estudiante FOR 
 ------------------------------------------------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION stock_lib() RETURNS TRIGGER AS $trigger$
     BEGIN
-      UPDATE "Ejemplares"
+      UPDATE Ejemplares
         SET cant = COALESCE(cant, 0) - NEW.cantidad
-        WHERE "Ejemplares".id_ejemplar = NEW.id_ejemplar;
+        WHERE Ejemplares.id_ejemplar = NEW.id_ejemplar;
     return NEW;
 END;
 $trigger$ language plpgsql;
 
-CREATE TRIGGER stock_lib AFTER INSERT ON "Prestamo" FOR EACH ROW EXECUTE PROCEDURE stock_lib();
+CREATE TRIGGER stock_lib AFTER INSERT ON Prestamo FOR EACH ROW EXECUTE PROCEDURE stock_lib();
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 INSERT INTO public.sede(
@@ -425,9 +422,22 @@ INSERT INTO public.estudiante(
 	id_est, nam_est, fechanac, cel, estado)
 	VALUES (456, 'SEBASTIAN', '1996/07/05', 3032328, TRUE);
 -------------------------------------------------------------------------------------------------------------------------
-INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (123,'ProfesorElectronica','Daniel lara',1,987);
-INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (124,'ProfesorBD','Sebastian Vanegas',1,986);
-INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (125,'ProfesorSemillero','Julian Caro',1,983);
-INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (126,'ProfesorIngles','Daniela Garcia',1,982);
 
 
+
+INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul)  VALUES (123,'ProfesorElectronica','Daniel lara',1);
+INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul)  VALUES (124,'ProfesorBD','Sebastian Vanegas',1,);
+INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul)  VALUES (125,'ProfesorSemillero','Julian Caro',1);
+INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul)  VALUES (126,'ProfesorIngles','Daniela Garcia',1);
+--------------------------------------------------------------------------------------------------------------------
+INSERT INTO public.asignaturas(id_asig, int_hor, creditos, nam_asig) VALUES (1, 3, 2, 'Calculo');
+INSERT INTO public.asignaturas(id_asig, int_hor, creditos, nam_asig) VALUES (2, 3, 2, 'Calculo 1');
+iNSERT INTO public.asignaturas(id_asig, int_hor, creditos, nam_asig) VALUES (3, 4, 3, 'practicas');
+INSERT INTO public.asignaturas(id_asig, int_hor, creditos, nam_asig) VALUES (4, 2, 2, 'ingles');
+-----------------------------------------------------------------------------------------
+INSERT INTO public.grupo(id_grupo, id_profesor, id_asig, horario) VALUES (1, 123, 1, 'Mañana');
+INSERT INTO public.grupo(id_grupo, id_profesor, id_asig, horario) VALUES (2, 124, 2, 'Mañana');
+INSERT INTO public.grupo(id_grupo, id_profesor, id_asig, horario) VALUES (1, 125, 3, 'Noche');
+INSERT INTO public.grupo(id_grupo, id_profesor, id_asig, horario) VALUES (2, 126, 4, 'Mañana');
+
+-------------------------------------------------------------------------------------
