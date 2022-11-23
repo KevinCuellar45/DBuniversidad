@@ -276,23 +276,7 @@ $create_userest$ LANGUAGE plpgsql;
 
 CREATE trigger create_userest AFTER INSERT ON estudiante
 FOR EACH ROW EXECUTE PROCEDURE create_userest();
-------------------------------------------------------------------------------------------------------------------------
-INSERT INTO public.estudiante(
-	id_est, nam_est, fechanac, cel, estado)
-	VALUES (123, 'DAVID', '2000/02/12', 3043185, TRUE);
 
-INSERT INTO public.estudiante(
-	id_est, nam_est, fechanac, cel, estado)
-	VALUES (213, 'JULIAN', '1998/07/05', 3031328, TRUE);
-
-INSERT INTO public.estudiante(
-	id_est, nam_est, fechanac, cel, estado)
-	VALUES (321, 'KEVIN', '2001/05/18', 3043192, TRUE);
-
-INSERT INTO public.estudiante(
-	id_est, nam_est, fechanac, cel, estado)
-	VALUES (456, 'SEBASTIAN', '1996/07/05', 3032328, TRUE);
-	
 ------------------------------------------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION create_userprof() RETURNS
 TRIGGER AS $create_userprof$
@@ -420,5 +404,23 @@ INSERT INTO public.carrera(
 INSERT INTO public.carrera(
 	id_carr, nam_carr, coordinador, id_facul)
 	VALUES (302, 'Ingenieria mecanica', 'Shellby', 3);
+	
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO public.estudiante(
+	id_est, nam_est, fechanac, cel, estado)
+	VALUES (123, 'DAVID', '2000/02/12', 3043185, TRUE);
+
+INSERT INTO public.estudiante(
+	id_est, nam_est, fechanac, cel, estado)
+	VALUES (213, 'JULIAN', '1998/07/05', 3031328, TRUE);
+
+INSERT INTO public.estudiante(
+	id_est, nam_est, fechanac, cel, estado)
+	VALUES (321, 'KEVIN', '2001/05/18', 3043192, TRUE);
+
+INSERT INTO public.estudiante(
+	id_est, nam_est, fechanac, cel, estado)
+	VALUES (456, 'SEBASTIAN', '1996/07/05', 3032328, TRUE);
+	
 
 
