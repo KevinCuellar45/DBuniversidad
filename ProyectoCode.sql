@@ -425,6 +425,8 @@ INSERT INTO public.estudiante(
 	VALUES (456, 'SEBASTIAN', '1996/07/05', 3032328, TRUE);
 -------------------------------------------------------------------------------------------------------------------------
 INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (123,'ProfesorElectronica','Daniel lara',1,987);
-
+INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (124,'ProfesorBD','Sebastian Vanegas',1,986);
+INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (125,'ProfesorSemillero','Julian Caro',1,983);
+INSERT INTO public.profesor(id_profesor,profesion,nam_prof,id_facul,id_grupo,)  VALUES (126,'ProfesorIngles','Daniela Garcia',1,982);
 
 
